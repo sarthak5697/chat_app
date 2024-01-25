@@ -1,3 +1,4 @@
+import 'package:chat_app/auth/auth_service.dart';
 import 'package:chat_app/components/my_textfield.dart';
 import 'package:flutter/material.dart';
 
@@ -8,13 +9,45 @@ class RegisterPage extends StatelessWidget {
   final TextEditingController _pwController = TextEditingController();
   final TextEditingController _confirmPwController = TextEditingController();
 
-  final void Function()? onTap; 
+  final void Function()? onTap;
 
-  RegisterPage({super.key , required this.onTap});
+  RegisterPage({super.key, required this.onTap});
 
   //register method
 
-  void register() {}
+  void register(BuildContext context) {
+    final _auth = AuthService();
+
+    //password match -> create user
+    if (_pwController.text == _confirmPwController.text) {
+      try {
+        _auth.signInWithEmailPassword(
+          _emailController.text,
+          _pwController.text,
+        );
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(
+              e.toString(),
+            ),
+          ),
+        );
+      }
+    }
+
+    //passwords dont match -> tell the user to fix
+    else {
+      showDialog(
+          context: context,
+          builder: (context) => const AlertDialog(
+                title: Text(
+                  "Passwords do not match",
+                ),
+              ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +110,7 @@ class RegisterPage extends StatelessWidget {
           //login button
           MyButton(
             text: "Register",
-            onTap: register,
+            onTap: () => register(context),
           ),
 
           const SizedBox(
@@ -94,7 +127,7 @@ class RegisterPage extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap:onTap,
+                onTap: onTap,
                 child: Text(
                   "Login Now",
                   style: TextStyle(
