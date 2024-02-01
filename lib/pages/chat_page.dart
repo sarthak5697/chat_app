@@ -1,3 +1,4 @@
+import 'package:chat_app/components/chat_bubble.dart';
 import 'package:chat_app/components/my_textfield.dart';
 import 'package:chat_app/services/auth/auth_service.dart';
 import 'package:chat_app/services/chat/chat_service.dart';
@@ -54,6 +55,10 @@ class ChatPage extends StatelessWidget {
           ),
           //user input
           _buildUserInput(),
+
+          const SizedBox(
+            height: 25,
+          )
         ],
       ),
     );
@@ -87,28 +92,74 @@ class ChatPage extends StatelessWidget {
   Widget _buildMessageItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    return Text(data["message"]);
+    var alignment = (data['senderId'] == _authService.getCurrentUser()!.uid)
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
+
+    return Container(
+      alignment: alignment,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment:
+              (data['senderId'] == _authService.getCurrentUser()!.uid)
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
+          children: [
+            Text(data['senderEmail']),
+            // Text(data['message']),
+            const SizedBox(
+              height: 5,
+            ),
+            ChatBubble(message: data['message']),
+          ],
+        ),
+      ),
+    );
+
+    // return Text(data["message"]);
   }
 
   Widget _buildUserInput() {
-    return Row(
-      children: [
-        //textfield should take up most of the space
-        Expanded(
-          child: MyTextField(
-            controller: _messageController,
-            hintText: "Type a message",
-            obscureText: false,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Container(
+        width:100,
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 219, 219, 219),
+          borderRadius: BorderRadius.all(
+            Radius.circular(40),
           ),
         ),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 0,
+            top: 10,
+            bottom: 10,
+          ),
+          child: Row(
+            // crossAxisAlignment:CrossAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              //textfield should take up most of the space
+              Expanded(
+                child: MyTextField(
+                  controller: _messageController,
+                  hintText: "Type a message",
+                  obscureText: false,
+                ),
+              ),
 
-        //send button
-        IconButton(
-          onPressed: sendMessage,
-          iconSize:40,
-          icon: const Icon(Icons.send),
+              //send button
+              IconButton(
+                onPressed: sendMessage,
+                iconSize: 40,
+                icon: const Icon(Icons.send),
+              ),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }
