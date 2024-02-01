@@ -47,19 +47,22 @@ class ChatPage extends StatelessWidget {
         // Set a custom height for the AppBar
         toolbarHeight: 100.0, // Adjust the value according to your needs
       ),
-      body: Column(
-        children: [
-          //display all messages
-          Expanded(
-            child: _buildMessageList(),
-          ),
-          //user input
-          _buildUserInput(),
+      body: Container(
+        color: Color.fromARGB(255, 224, 198, 234),
+        child: Column(
+          children: [
+            //display all messages
+            Expanded(
+              child: _buildMessageList(),
+            ),
+            //user input
+            _buildUserInput(),
 
-          const SizedBox(
-            height: 25,
-          )
-        ],
+            const SizedBox(
+              height: 25,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -124,7 +127,7 @@ class ChatPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: Container(
-        width:100,
+        // width:100,
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 219, 219, 219),
           borderRadius: BorderRadius.all(
